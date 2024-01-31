@@ -47,28 +47,29 @@ namespace MyDoctorAppointment.Data.Repositories
             {
                 File.WriteAllText(Path, "[]");
             }
-
-            if ()
+            var xml = File.ReadAllText(Path);
+            if (string.IsNullOrWhiteSpace(xml))
             {
                 File.WriteAllText(Path, "[]");
-                 = "[]";
+                xml = "[]";
             }
-
-                        }
-
+            XmlSerializer formatter = new XmlSerializer(typeof(TSource[]));
+            using (FileStream fs = new FileStream(Path, FileMode.OpenOrCreate))
+            {
+                TSource[]? newpeople = formatter.Deserialize(fs) as TSource[];
+            }
+            return new TSource[0];
         }
 
-    public TSource? GetById(int id)
-    {
-        return GetAll().FirstOrDefault(x => x.Id == id);
-    }
+        public TSource? GetById(int id)
+        {
+            return GetAll().FirstOrDefault(x => x.Id == id);
+        }
 
-    public TSource Update(int id, TSource source)
+        public TSource Update(int id, TSource source)
         {
             source.UpdatedAt = DateTime.Now;
             source.Id = id;
-
-
 
             return source;
         }
