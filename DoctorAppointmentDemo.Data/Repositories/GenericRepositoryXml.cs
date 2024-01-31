@@ -54,11 +54,12 @@ namespace MyDoctorAppointment.Data.Repositories
                 xml = "[]";
             }
             XmlSerializer formatter = new XmlSerializer(typeof(TSource[]));
+            TSource[]? newpeople;
             using (FileStream fs = new FileStream(Path, FileMode.OpenOrCreate))
             {
-                TSource[]? newpeople = formatter.Deserialize(fs) as TSource[];
+                newpeople = formatter.Deserialize(fs) as TSource[];
             }
-            return new TSource[0];
+            return newpeople;
         }
 
         public TSource? GetById(int id)
