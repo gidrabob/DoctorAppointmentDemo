@@ -1,11 +1,8 @@
-﻿using DocumentFormat.OpenXml.Bibliography;
-using DocumentFormat.OpenXml.Office2010.PowerPoint;
-using MyDoctorAppointment.Data.Configuration;
+﻿using MyDoctorAppointment.Data.Configuration;
 using MyDoctorAppointment.Data.Interfaces;
 using MyDoctorAppointment.Domain.Entities;
 using Newtonsoft.Json;
-using System.Diagnostics.Tracing;
-using System.Xml;
+using MyDoctorAppointment.Data.Repositories;
 using System.Xml.Serialization;
 
 namespace MyDoctorAppointment.Data.Repositories
@@ -15,17 +12,15 @@ namespace MyDoctorAppointment.Data.Repositories
         public abstract string Path { get; set; }
 
         public abstract int LastId { get; set; }
+        public XmlDataSerializerService? SerializerService { get; set; }
 
         public TSource Create(TSource source)
         {
             source.Id = ++LastId;
             source.CreatedAt = DateTime.Now;
+            var doctors = GetAll().Append(source).ToList();//добавляет в конец списка новый файл?
 
-            XmlSerializer serializer = new XmlSerializer(typeof(TSource));
-            using (FileStream fs = new FileStream(Path, FileMode.OpenOrCreate))
-            {
-                serializer.Serialize(fs, source);
-            }
+            SerializerService!.Serialize(Path, doctors);
             SaveLastId();
 
             return source;
@@ -33,33 +28,19 @@ namespace MyDoctorAppointment.Data.Repositories
 
         public bool Delete(int id)
         {
+            
             if (GetById(id) is null)
+            {
                 return false;
-
-
+            }
+            SerializerService!.Serialize(Path,GetAll().Where(x => x.Id !=id));
 
             return true;
         }
 
         public IEnumerable<TSource> GetAll()
         {
-            if (!File.Exists(Path))
-            {
-                File.WriteAllText(Path, "[]");
-            }
-            var xml = File.ReadAllText(Path);
-            if (string.IsNullOrWhiteSpace(xml))
-            {
-                File.WriteAllText(Path, "[]");
-                xml = "[]";
-            }
-            XmlSerializer formatter = new XmlSerializer(typeof(TSource[]));
-            TSource[]? newpeople;
-            using (FileStream fs = new FileStream(Path, FileMode.OpenOrCreate))
-            {
-                newpeople = formatter.Deserialize(fs) as TSource[];
-            }
-            return newpeople;
+            return SerializerService.Deserialize<List<TSource>>(Path);
         }
 
         public TSource? GetById(int id)
@@ -71,7 +52,7 @@ namespace MyDoctorAppointment.Data.Repositories
         {
             source.UpdatedAt = DateTime.Now;
             source.Id = id;
-
+            SerializerService!.Serialize(Path, GetAll().Select(x => x.Id == id ? source : x));
             return source;
         }
 

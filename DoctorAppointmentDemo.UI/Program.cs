@@ -1,4 +1,5 @@
-﻿using MyDoctorAppointment.Data.Repositories;
+﻿using DocumentFormat.OpenXml.Drawing.Diagrams;
+using MyDoctorAppointment.Data.Repositories;
 using MyDoctorAppointment.Domain.Entities;
 using MyDoctorAppointment.Service.Interfaces;
 using MyDoctorAppointment.Service.Services;
@@ -13,6 +14,12 @@ namespace MyDoctorAppointment
     public class DoctorAppointment
     {
         private readonly IDoctorService _doctorService;
+
+        public DoctorAppointment(IDoctorService doctorService)
+        {
+            _doctorService = doctorService;
+        }
+
         public DoctorAppointment(int filter)
         {
             if (filter == (int)Filter.Json)
@@ -73,8 +80,13 @@ namespace MyDoctorAppointment
     public static class Program
     {
         public static void Main()
-        {            
-            var doctorAppointment = new DoctorAppointment(1);
+        {
+            Console.WriteLine("Сhoose what type to save in:");
+            Console.WriteLine("1 to save as Xml");
+            Console.WriteLine("2 to save as Json");
+            int typeToSave = Convert.ToInt32(Console.ReadLine());
+
+            var doctorAppointment = new DoctorAppointment(typeToSave);
             doctorAppointment.Menu();
         }
     }
