@@ -12,7 +12,7 @@ namespace MyDoctorAppointment.Data.Repositories
         public abstract string Path { get; set; }
 
         public abstract int LastId { get; set; }
-        public XmlDataSerializerService? SerializerService { get; set; }
+        public XmlDataSerializerService SerializerService { get; set; }
 
         public TSource Create(TSource source)
         {
@@ -20,7 +20,7 @@ namespace MyDoctorAppointment.Data.Repositories
             source.CreatedAt = DateTime.Now;
             var doctors = GetAll().Append(source).ToList();//добавляет в конец списка новый файл?
 
-            SerializerService!.Serialize(Path, doctors);
+            SerializerService.Serialize(Path, doctors);
             SaveLastId();
 
             return source;
@@ -33,7 +33,7 @@ namespace MyDoctorAppointment.Data.Repositories
             {
                 return false;
             }
-            SerializerService!.Serialize(Path,GetAll().Where(x => x.Id !=id));
+            SerializerService.Serialize(Path,GetAll().Where(x => x.Id !=id));
 
             return true;
         }
@@ -52,7 +52,7 @@ namespace MyDoctorAppointment.Data.Repositories
         {
             source.UpdatedAt = DateTime.Now;
             source.Id = id;
-            SerializerService!.Serialize(Path, GetAll().Select(x => x.Id == id ? source : x));
+            SerializerService.Serialize(Path, GetAll().Select(x => x.Id == id ? source : x));
             return source;
         }
 

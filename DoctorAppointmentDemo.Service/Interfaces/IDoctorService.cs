@@ -1,4 +1,5 @@
 ﻿using MyDoctorAppointment.Domain.Entities;
+using MyDoctorAppointment.Service.ViewModels;
 
 namespace MyDoctorAppointment.Service.Interfaces
 {
@@ -6,7 +7,7 @@ namespace MyDoctorAppointment.Service.Interfaces
     {
         Doctor Create(Doctor doctor);
 
-        IEnumerable<Doctor> GetAll();
+        IEnumerable<DoctorViewModel> GetAll();
 
         Doctor? Get(int id);
 

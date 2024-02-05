@@ -6,11 +6,11 @@ namespace MyDoctorAppointment.Data.Repositories
 {
     public class XmlDataSerializerService
     {
-        public static Tsource Deserialize<Tsource>(string path)
+        public Tsource Deserialize<Tsource>(string path)
         {
             XmlSerializer serializer = new (typeof(Tsource));
 
-            using (FileStream stream = new FileStream(path, FileMode.OpenOrCreate))
+            using (FileStream stream = new (path, FileMode.OpenOrCreate))
             {
                 return (Tsource)serializer.Deserialize(stream)!;
             }

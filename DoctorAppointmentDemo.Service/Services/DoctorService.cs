@@ -3,6 +3,7 @@ using MyDoctorAppointment.Data.Interfaces;
 using MyDoctorAppointment.Data.Repositories;
 using MyDoctorAppointment.Domain.Entities;
 using MyDoctorAppointment.Service.Interfaces;
+using MyDoctorAppointment.Service.ViewModels;
 
 namespace MyDoctorAppointment.Service.Services
 {
@@ -30,9 +31,11 @@ namespace MyDoctorAppointment.Service.Services
             return _doctorRepository.GetById(id);
         }
 
-        public IEnumerable<Doctor> GetAll()
+        public IEnumerable<DoctorViewModel> GetAll()
         {
-            return _doctorRepository.GetAll();
+            var doctors = _doctorRepository.GetAll();
+            var doctorViewModels = doctors.Select(x => x.ConvertTo());
+            return doctorViewModels;
         }
 
         public Doctor Update(int id, Doctor doctor)

@@ -85,8 +85,27 @@ namespace MyDoctorAppointment
             Console.WriteLine("1 to save as Xml");
             Console.WriteLine("2 to save as Json");
             int typeToSave = Convert.ToInt32(Console.ReadLine());
+            DoctorAppointment doctorAppointment = null;
 
-            var doctorAppointment = new DoctorAppointment(typeToSave);
+            while (true)
+            {
+                if (typeToSave.Equals(1))
+                {
+                    doctorAppointment = new DoctorAppointment(typeToSave);
+                    break;
+                }
+                else if (typeToSave.Equals(2))
+                {
+                    doctorAppointment = new DoctorAppointment(typeToSave);
+                    break;
+                }
+                else
+                {
+                    Console.WriteLine("Wrong choice.");
+                    typeToSave = Convert.ToInt32(Console.ReadLine());
+                }
+            }
+
             doctorAppointment.Menu();
         }
     }
